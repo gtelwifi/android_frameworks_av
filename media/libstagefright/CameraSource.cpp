@@ -124,7 +124,7 @@ static int32_t getColorFormat(const char* colorFormat) {
     }
 
     if (!strcmp(colorFormat, CameraParameters::PIXEL_FORMAT_YUV420SP)) {
-#ifdef USE_SAMSUNG_COLORFORMAT
+#if defined(USE_SAMSUNG_COLORFORMAT) && !defined(SPRD_HARDWARE)
         static const int OMX_SEC_COLOR_FormatNV12LPhysicalAddress = 0x7F000002;
         return OMX_SEC_COLOR_FormatNV12LPhysicalAddress;
 #else

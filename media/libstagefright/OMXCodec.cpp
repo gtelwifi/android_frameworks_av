@@ -65,7 +65,7 @@
 #include <QOMX_AudioExtensions.h>
 #endif
 
-#ifdef USE_SAMSUNG_COLORFORMAT
+#if defined(USE_SAMSUNG_COLORFORMAT) && !defined(SPRD_HARDWARE)
 #include <sec_format.h>
 #endif
 
@@ -406,15 +406,17 @@ uint32_t OMXCodec::getComponentQuirks(
                 index, "defers-output-buffer-allocation")) {
         quirks |= kDefersOutputBufferAllocation;
     }
-#ifdef DOLBY_UDC
+#if defined(DOLBY_UDC) || defined(SPRD_HARDWARE)
     if (list->codecHasQuirk(
                 index, "needs-flush-before-disable")) {
         quirks |= kNeedsFlushBeforeDisable;
     }
+#ifndef SPRD_HARDWARE
     if (list->codecHasQuirk(
                 index, "requires-flush-complete-emulation")) {
         quirks |= kRequiresFlushCompleteEmulation;
     }
+#endif
 #endif // DOLBY_UDC
 
 #ifdef MTK_HARDWARE
@@ -2440,9 +2442,11 @@ status_t OMXCodec::allocateOutputBuffersFromNativeWindow() {
     OMX_COLOR_FORMATTYPE eColorFormat;
 
     switch (def.format.video.eColorFormat) {
+#ifndef SPRD_HARDWARE
     case OMX_SEC_COLOR_FormatNV12TPhysicalAddress:
         eColorFormat = (OMX_COLOR_FORMATTYPE)HAL_PIXEL_FORMAT_CUSTOM_YCbCr_420_SP_TILED;
         break;
+#endif
     case OMX_COLOR_FormatYUV420SemiPlanar:
         eColorFormat = (OMX_COLOR_FORMATTYPE)HAL_PIXEL_FORMAT_YCbCr_420_SP;
         break;

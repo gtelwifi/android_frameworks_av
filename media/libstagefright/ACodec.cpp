@@ -40,7 +40,7 @@
 
 #include <OMX_Component.h>
 
-#ifdef USE_SAMSUNG_COLORFORMAT
+#if defined(USE_SAMSUNG_COLORFORMAT) && !defined(SPRD_HARDWARE)
 #include <sec_format.h>
 #endif
 
@@ -910,6 +910,12 @@ void ACodec::setNativeWindowColorFormat(OMX_COLOR_FORMATTYPE &eNativeColorFormat
 {
     // In case of Samsung decoders, we set proper native color format for the Native Window
     if (!strcasecmp(mComponentName.c_str(), "OMX.SEC.AVC.Decoder")
+#ifdef SPRD_HARDWARE
+        || !strcasecmp(mComponentName.c_str(), "OMX.sprd.mpeg4.decoder")
+        || !strcasecmp(mComponentName.c_str(), "OMX.sprd.h263.decoder")
+        || !strcasecmp(mComponentName.c_str(), "OMX.sprd.h264.decoder")
+        || !strcasecmp(mComponentName.c_str(), "OMX.sprd.vpx.decoder")
+#endif
         || !strcasecmp(mComponentName.c_str(), "OMX.SEC.FP.AVC.Decoder")) {
         switch (eNativeColorFormat) {
             case OMX_COLOR_FormatYUV420SemiPlanar:
